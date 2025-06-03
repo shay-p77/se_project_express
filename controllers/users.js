@@ -19,7 +19,7 @@ const getUser = (req, res) => {
       if (err.name === 'CastError') {
         return res.status(400).send({ message: 'Invalid user ID format' });
       }
-      res.status(500).send({ message: err.message });
+      return res.status(500).send({ message: err.message });
     });
 };
 
@@ -33,7 +33,7 @@ const createUser = (req, res) => {
           .status(400)
           .send({ message: 'Invalid data for creating user' });
       }
-      res.status(500).send({ message: err.message });
+      return res.status(500).send({ message: err.message });
     });
 };
 

@@ -6,7 +6,7 @@ const getItems = (req, res) => {
     .then((items) => res.send(items))
     .catch((err) => {
       console.error(err);
-      res
+      return res
         .status(SERVER_ERROR)
         .send({ message: 'An error has occurred on the server.' });
     });
@@ -17,7 +17,10 @@ const createItem = (req, res) => {
   const owner = req.user._id;
 
   ClothingItem.create({
-    name, weather, imageUrl, owner,
+    name,
+    weather,
+    imageUrl,
+    owner,
   })
     .then((item) => res.status(201).send(item))
     .catch((err) => {
@@ -27,7 +30,7 @@ const createItem = (req, res) => {
           .status(BAD_REQUEST)
           .send({ message: 'Invalid data passed for creating item.' });
       }
-      res
+      return res
         .status(SERVER_ERROR)
         .send({ message: 'An error has occurred on the server.' });
     });
@@ -49,10 +52,9 @@ const deleteItem = (req, res) => {
         return res.status(NOT_FOUND).send({ message: err.message });
       }
       if (err.name === 'CastError') {
-        // invalid ObjectId format
         return res.status(BAD_REQUEST).send({ message: 'Invalid item ID' });
       }
-      res
+      return res
         .status(SERVER_ERROR)
         .send({ message: 'An error has occurred on the server.' });
     });
@@ -61,7 +63,7 @@ const deleteItem = (req, res) => {
 const likeItem = (req, res) => {
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
-    { $addToSet: { likes: req.user._id } }, // Add user ID to likes if not already there
+    { $addToSet: { likes: req.user._id } },
     { new: true },
   )
     .orFail(() => {
@@ -78,7 +80,7 @@ const likeItem = (req, res) => {
       if (err.name === 'CastError') {
         return res.status(BAD_REQUEST).send({ message: 'Invalid item ID' });
       }
-      res
+      return res
         .status(SERVER_ERROR)
         .send({ message: 'An error has occurred on the server.' });
     });
@@ -87,7 +89,7 @@ const likeItem = (req, res) => {
 const unlikeItem = (req, res) => {
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
-    { $pull: { likes: req.user._id } }, // Remove user ID from likes array
+    { $pull: { likes: req.user._id } },
     { new: true },
   )
     .orFail(() => {
@@ -104,12 +106,16 @@ const unlikeItem = (req, res) => {
       if (err.name === 'CastError') {
         return res.status(BAD_REQUEST).send({ message: 'Invalid item ID' });
       }
-      res
+      return res
         .status(SERVER_ERROR)
         .send({ message: 'An error has occurred on the server.' });
     });
 };
 
 module.exports = {
-  getItems, createItem, deleteItem, likeItem, unlikeItem,
+  getItems,
+  createItem,
+  deleteItem,
+  likeItem,
+  unlikeItem,
 };

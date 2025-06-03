@@ -9,7 +9,6 @@ mongoose
 const { PORT = 3001 } = process.env;
 const app = express();
 
-// Middleware to parse JSON
 app.use(express.json());
 
 // Import routes
