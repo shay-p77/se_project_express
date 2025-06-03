@@ -1,4 +1,5 @@
 const express = require('express');
+
 const router = express.Router();
 
 const {
@@ -6,10 +7,9 @@ const {
   createItem,
   deleteItem,
   likeItem,
-  unlikeItem
+  unlikeItem,
 } = require('../controllers/clothingItems');
 
-// Remove extra /items prefix — it's added in app.js
 router.get('/', getItems);
 router.post('/', createItem);
 router.delete('/:itemId', deleteItem);
