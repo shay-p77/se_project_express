@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const { NOT_FOUND } = require('../utils/errors.js');
+const { NOT_FOUND } = require('./utils/errors.js');
 
 mongoose
   .connect('mongodb://127.0.0.1:27017/wtwr_db')
