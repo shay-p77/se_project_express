@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const { NOT_FOUND } = require('../utils/errors');
 
 mongoose
   .connect('mongodb://127.0.0.1:27017/wtwr_db')
@@ -34,7 +35,7 @@ app.get('/', (req, res) => {
 
 // 404 handler for non-existent routes
 app.use((req, res) => {
-  res.status(404).send({ message: 'Requested resource not found' });
+  res.status(NOT_FOUND).send({ message: 'Requested resource not found' });
 });
 
 // Start the server
