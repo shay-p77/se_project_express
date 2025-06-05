@@ -39,17 +39,26 @@ const createItem = (req, res) => {
 const deleteItem = (req, res) => {
   const { itemId } = req.params;
 
-  ClothingItem.findByIdAndDelete(itemId)
+  ClothingItem.findById(itemId)
     .orFail(() => {
       const error = new Error('Item not found');
       error.statusCode = NOT_FOUND;
       throw error;
     })
-    .then((item) => res.send(item))
+    .then((item) => {
+      if (item.owner.toString() !== req.user._id.toString()) {
+        const error = new Error('You are not authorized to delete this item.');
+        error.statusCode = 403;
+        throw error;
+      }
+
+      return ClothingItem.findByIdAndDelete(itemId);
+    })
+    .then((deletedItem) => res.send(deletedItem))
     .catch((err) => {
       console.error(err);
-      if (err.statusCode === NOT_FOUND) {
-        return res.status(NOT_FOUND).send({ message: err.message });
+      if (err.statusCode === NOT_FOUND || err.statusCode === 403) {
+        return res.status(err.statusCode).send({ message: err.message });
       }
       if (err.name === 'CastError') {
         return res.status(BAD_REQUEST).send({ message: 'Invalid item ID' });
