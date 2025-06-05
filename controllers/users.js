@@ -60,15 +60,19 @@ const createUser = (req, res) => {
     }))
     .then((user) => {
       const {
-        _id, name, avatar, email,
+        _id,
+        name: userName,
+        avatar: userAvatar,
+        email: userEmail,
       } = user;
       res.status(201).send({
         _id,
-        name,
-        avatar,
-        email,
+        name: userName,
+        avatar: userAvatar,
+        email: userEmail,
       });
     })
+
     .catch((err) => {
       console.error(err);
       if (err.code === 11000) {
@@ -119,7 +123,7 @@ const login = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      res.status(UNAUTHORIZED).send({ message: 'Incorrect email or password' });
+      return res.status(UNAUTHORIZED).send({ message: 'Incorrect email or password' });
     });
 };
 

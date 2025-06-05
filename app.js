@@ -33,20 +33,16 @@ app.use(auth);
 app.use('/users', userRoutes);
 app.use('/items', itemRoutes); // POST, DELETE protected
 
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
   console.error(err);
-  res.status(err.statusCode || 500).send({ message: err.message || 'An error occurred on the server.' });
+  return res.status(err.statusCode || 500).send({ message: err.message || 'An error occurred on the server.' });
 });
 
 // Basic route for testing
-app.get('/', (req, res) => {
-  res.send('Hello from the WTWR backend!');
-});
+app.get('/', (req, res) => res.send('Hello from the WTWR backend!'));
 
 // 404 handler for non-existent routes
-app.use((req, res) => {
-  res.status(NOT_FOUND).send({ message: 'Requested resource not found' });
-});
+app.use((req, res) => res.status(NOT_FOUND).send({ message: 'Requested resource not found' }));
 
 // Start the server
 app.listen(PORT, () => {
