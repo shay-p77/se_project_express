@@ -34,7 +34,6 @@ app.use((req, res, next) => {
   next();
 });
 
-
 // Protect all routes below
 app.use(auth);
 
