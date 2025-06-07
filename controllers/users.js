@@ -50,36 +50,43 @@ const createUser = (req, res) => {
     name, avatar, email, password,
   } = req.body;
 
- return bcrypt
-    .hash(password, SALT_ROUNDS)
-    .then((hash) => User.create({
-      name,
-      avatar,
-      email,
-      password: hash,
-    }))
-    .then((user) => {
-      const {
-        _id,
-        name: userName,
-        avatar: userAvatar,
-        email: userEmail,
-      } = user;
-      res.status(201).send({
-        _id,
-        name: userName,
-        avatar: userAvatar,
-        email: userEmail,
-      });
-    })
+  if (!name || !avatar || !email || !password) {
+    return res.status(BAD_REQUEST).send({ message: 'Missing required fields' });
+  }
 
-    .catch((err) => {
-      console.error(err);
-      if (err.code === 11000) {
+  User.findOne({ email })
+    .then((existingUser) => {
+      if (existingUser) {
         return res
           .status(CONFLICT)
           .send({ message: 'User with this email already exists' });
       }
+
+      return bcrypt
+        .hash(password, SALT_ROUNDS)
+        .then((hash) => User.create({
+          name,
+          avatar,
+          email,
+          password: hash,
+        }))
+        .then((user) => {
+          const {
+            _id,
+            name: userName,
+            avatar: userAvatar,
+            email: userEmail,
+          } = user;
+          res.status(201).send({
+            _id,
+            name: userName,
+            avatar: userAvatar,
+            email: userEmail,
+          });
+        });
+    })
+    .catch((err) => {
+      console.error(err);
       if (err.name === 'ValidationError') {
         return res
           .status(BAD_REQUEST)
@@ -123,7 +130,9 @@ const login = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      return res.status(UNAUTHORIZED).send({ message: 'Incorrect email or password' });
+      return res
+        .status(UNAUTHORIZED)
+        .send({ message: 'Incorrect email or password' });
     });
 };
 
