@@ -25,11 +25,13 @@ const getUser = (req, res) => {
   const { userId } = req.params;
   User.findById(userId)
     .then((user) => {
-      if (!user) {
-        return res.status(NOT_FOUND).send({ message: 'User not found' });
-      }
-      return res.send(user);
-    })
+  if (!user) {
+    return res.status(NOT_FOUND).send({ message: 'User not found' });
+  } else {
+    return res.send(user);
+  }
+})
+
     .catch((err) => {
       console.error(err);
       if (err.name === 'CastError') {
@@ -140,12 +142,14 @@ const getCurrentUser = (req, res) => {
   const userId = req.user._id; // from auth middleware
 
   User.findById(userId)
-    .then((user) => {
-      if (!user) {
-        return res.status(NOT_FOUND).send({ message: 'User not found' });
-      }
-      return res.send(user);
-    })
+   .then((user) => {
+  if (!user) {
+    return res.status(NOT_FOUND).send({ message: 'User not found' });
+  } else {
+    return res.send(user);
+  }
+})
+
     .catch((err) => {
       console.error(err);
       if (err.name === 'CastError') {
@@ -171,12 +175,14 @@ const updateUser = (req, res) => {
       runValidators: true, // run schema validators on update
     },
   )
-    .then((user) => {
-      if (!user) {
-        return res.status(NOT_FOUND).send({ message: 'User not found' });
-      }
-      res.send(user);
-    })
+   .then((user) => {
+  if (!user) {
+    return res.status(NOT_FOUND).send({ message: 'User not found' });
+  } else {
+    return res.send(user);
+  }
+})
+
     .catch((err) => {
       console.error(err);
       if (err.name === 'ValidationError') {

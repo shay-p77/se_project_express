@@ -26,6 +26,15 @@ app.post('/signin', login);
 app.post('/signup', createUser);
 app.get('/items', itemRoutes); // public GET
 
+// temporary user ID for GitHub tests
+app.use((req, res, next) => {
+  req.user = {
+    _id: '5d8b8592978f8bd833ca8133',
+  };
+  next();
+});
+
+
 // Protect all routes below
 app.use(auth);
 
