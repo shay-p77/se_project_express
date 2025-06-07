@@ -22,7 +22,7 @@ app.use(express.json());
 // Public routes
 app.post('/signin', login);
 app.post('/signup', createUser);
-app.get('/items', itemRoutes);
+// app.get('/items', itemRoutes);
 
 // Auth middleware for everything below this line
 app.use(auth);
