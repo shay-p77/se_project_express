@@ -23,14 +23,13 @@ const getUsers = (req, res) => {
 
 const getUser = (req, res) => {
   const { userId } = req.params;
-  User.findById(userId)
+  return User.findById(userId)
     .then((user) => {
       if (!user) {
         return res.status(NOT_FOUND).send({ message: 'User not found' });
       }
       return res.send(user);
     })
-
     .catch((err) => {
       console.error(err);
       if (err.name === 'CastError') {
@@ -55,7 +54,7 @@ const createUser = (req, res) => {
     return res.status(BAD_REQUEST).send({ message: 'Missing required fields' });
   }
 
-  User.findOne({ email })
+  return User.findOne({ email })
     .then((existingUser) => {
       if (existingUser) {
         return res
@@ -78,7 +77,7 @@ const createUser = (req, res) => {
             avatar: userAvatar,
             email: userEmail,
           } = user;
-          res.status(201).send({
+          return res.status(201).send({
             _id,
             name: userName,
             avatar: userAvatar,
@@ -99,20 +98,6 @@ const createUser = (req, res) => {
     });
 };
 
-// const login = (req, res) => {
-//   const { email, password } = req.body;
-
-//   User.findUserByCredentials(email, password)
-//     .then((user) => {
-//       const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '7d' });
-//       res.send({ token });
-//     })
-//     .catch((err) => {
-//       console.error(err);
-//       res.status(UNAUTHORIZED).send({ message: 'Incorrect email or password' });
-//     });
-// };
-
 const login = (req, res) => {
   const { email, password } = req.body;
 
@@ -122,12 +107,12 @@ const login = (req, res) => {
       .send({ message: 'Email and password are required' });
   }
 
-  User.findUserByCredentials(email, password)
+  return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: '7d',
       });
-      res.send({ token });
+      return res.send({ token });
     })
     .catch((err) => {
       console.error(err);
@@ -138,16 +123,15 @@ const login = (req, res) => {
 };
 
 const getCurrentUser = (req, res) => {
-  const userId = req.user._id; // from auth middleware
+  const userId = req.user._id;
 
-  User.findById(userId)
+  return User.findById(userId)
     .then((user) => {
       if (!user) {
         return res.status(NOT_FOUND).send({ message: 'User not found' });
       }
       return res.send(user);
     })
-
     .catch((err) => {
       console.error(err);
       if (err.name === 'CastError') {
@@ -165,12 +149,12 @@ const updateUser = (req, res) => {
   const userId = req.user._id;
   const { name, avatar } = req.body;
 
-  User.findByIdAndUpdate(
+  return User.findByIdAndUpdate(
     userId,
     { name, avatar },
     {
-      new: true, // return the updated document
-      runValidators: true, // run schema validators on update
+      new: true,
+      runValidators: true,
     },
   )
     .then((user) => {
@@ -179,7 +163,6 @@ const updateUser = (req, res) => {
       }
       return res.send(user);
     })
-
     .catch((err) => {
       console.error(err);
       if (err.name === 'ValidationError') {
