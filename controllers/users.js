@@ -10,38 +10,38 @@ const {
 } = require('../utils/errors');
 const { JWT_SECRET } = require('../utils/config');
 
-const getUsers = (req, res) => {
-  User.find({})
-    .then((users) => res.send(users))
-    .catch((err) => {
-      console.error(err);
-      return res
-        .status(SERVER_ERROR)
-        .send({ message: 'An error has occurred on the server.' });
-    });
-};
+// const getUsers = (req, res) => {
+//   User.find({})
+//     .then((users) => res.send(users))
+//     .catch((err) => {
+//       console.error(err);
+//       return res
+//         .status(SERVER_ERROR)
+//         .send({ message: 'An error has occurred on the server.' });
+//     });
+// };
 
-const getUser = (req, res) => {
-  const { userId } = req.params;
-  return User.findById(userId)
-    .then((user) => {
-      if (!user) {
-        return res.status(NOT_FOUND).send({ message: 'User not found' });
-      }
-      return res.send(user);
-    })
-    .catch((err) => {
-      console.error(err);
-      if (err.name === 'CastError') {
-        return res
-          .status(BAD_REQUEST)
-          .send({ message: 'Invalid user ID format' });
-      }
-      return res
-        .status(SERVER_ERROR)
-        .send({ message: 'An error has occurred on the server.' });
-    });
-};
+// const getUser = (req, res) => {
+//   const { userId } = req.params;
+//   return User.findById(userId)
+//     .then((user) => {
+//       if (!user) {
+//         return res.status(NOT_FOUND).send({ message: 'User not found' });
+//       }
+//       return res.send(user);
+//     })
+//     .catch((err) => {
+//       console.error(err);
+//       if (err.name === 'CastError') {
+//         return res
+//           .status(BAD_REQUEST)
+//           .send({ message: 'Invalid user ID format' });
+//       }
+//       return res
+//         .status(SERVER_ERROR)
+//         .send({ message: 'An error has occurred on the server.' });
+//     });
+// };
 
 const SALT_ROUNDS = 10;
 
@@ -116,9 +116,14 @@ const login = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
+
+      if (err.message === 'Incorrect email or password') {
+        return res.status(UNAUTHORIZED).send({ message: err.message });
+      }
+
       return res
-        .status(UNAUTHORIZED)
-        .send({ message: 'Incorrect email or password' });
+        .status(SERVER_ERROR)
+        .send({ message: 'An error has occurred on the server.' });
     });
 };
 
@@ -177,8 +182,6 @@ const updateUser = (req, res) => {
 };
 
 module.exports = {
-  getUsers,
-  getUser,
   createUser,
   login,
   getCurrentUser,

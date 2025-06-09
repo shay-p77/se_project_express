@@ -1,5 +1,7 @@
 const ClothingItem = require('../models/clothingItem');
-const { BAD_REQUEST, NOT_FOUND, SERVER_ERROR } = require('../utils/errors');
+const {
+  BAD_REQUEST, NOT_FOUND, SERVER_ERROR, FORBIDDEN,
+} = require('../utils/errors');
 
 const getItems = (req, res) => {
   ClothingItem.find({})
@@ -48,7 +50,7 @@ const deleteItem = (req, res) => {
     .then((item) => {
       if (item.owner.toString() !== req.user._id.toString()) {
         const error = new Error('You are not authorized to delete this item.');
-        error.statusCode = 403;
+        error.statusCode = FORBIDDEN;
         throw error;
       }
 
