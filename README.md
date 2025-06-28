@@ -26,3 +26,13 @@ The back-end project is focused on creating a server for the WTWR application. Y
 ### Testing
 
 Before committing your code, make sure you edit the file `sprint.txt` in the root folder. The file `sprint.txt` should contain the number of the sprint you're currently working on. For ex. 12
+
+## Deployment
+
+The backend API is accessible at: https://api.wtwr.com.jumpingcrab.com  
+The frontend is served at: https://wtwr.com.jumpingcrab.com
+
+Make sure you have the server running with PM2:
+
+```bash
+pm2 start app.js --name wtwr-backend

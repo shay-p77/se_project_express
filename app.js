@@ -8,7 +8,6 @@ const errorHandler = require('./middlewares/error-handler');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 require('dotenv').config();
 
-
 mongoose
   .connect('mongodb://127.0.0.1:27017/wtwr_db')
   .then(() => console.log('Connected to MongoDB'))
@@ -26,6 +25,13 @@ app.use(requestLogger);
 // Root route — simple welcome message
 app.get('/', (req, res) => {
   res.send('Welcome to the WTWR backend API!');
+});
+
+// Crash-test route - for testing server crash recovery with PM2
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Server will crash now');
+  }, 0);
 });
 
 // Routes
