@@ -1,2 +1,2 @@
-const JWT_SECRET = 'super-secret-key'; // replace with an env variable later
+const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-for-dev';
 module.exports = { JWT_SECRET };

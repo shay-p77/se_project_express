@@ -6,6 +6,8 @@ const { NOT_FOUND } = require('./utils/errors');
 const routes = require('./routes');
 const errorHandler = require('./middlewares/error-handler');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+require('dotenv').config();
+
 
 mongoose
   .connect('mongodb://127.0.0.1:27017/wtwr_db')
