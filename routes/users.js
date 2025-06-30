@@ -6,8 +6,11 @@ const auth = require('../middlewares/auth');
 
 const { getCurrentUser, updateUser } = require('../controllers/users');
 
-// Protected routes
+const { validateUserUpdate } = require('../middlewares/validation');
+
+// protected routes
 router.get('/me', auth, getCurrentUser);
-router.patch('/me', auth, updateUser);
+
+router.patch('/me', auth, validateUserUpdate, updateUser);
 
 module.exports = router;

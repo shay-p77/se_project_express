@@ -36,3 +36,4 @@ Make sure you have the server running with PM2:
 
 ```bash
 pm2 start app.js --name wtwr-backend
+```

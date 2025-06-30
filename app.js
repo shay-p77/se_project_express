@@ -1,12 +1,13 @@
+require('dotenv').config();
+
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const { errors } = require('celebrate');
-const { NOT_FOUND } = require('./utils/errors');
 const routes = require('./routes');
 const errorHandler = require('./middlewares/error-handler');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-require('dotenv').config();
+const { NotFoundError } = require('./utils/errors');
 
 mongoose
   .connect('mongodb://127.0.0.1:27017/wtwr_db')
@@ -38,9 +39,9 @@ app.get('/crash-test', () => {
 app.use(routes);
 
 // 404 fallback (must be after routes)
-app.use((req, res) =>
-  res.status(NOT_FOUND).send({ message: 'Requested resource not found' })
-);
+app.use((req, res, next) => {
+  next(new NotFoundError('Requested resource not found'));
+});
 
 // Enable error logger AFTER routes but BEFORE error handlers
 app.use(errorLogger);
@@ -48,7 +49,7 @@ app.use(errorLogger);
 // Celebrate validation error handler
 app.use(errors());
 
-// Centralized error handler (last middleware)
+// Centralized error handler
 app.use(errorHandler);
 
 app.listen(PORT, '0.0.0.0', () => {
