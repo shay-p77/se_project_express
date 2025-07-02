@@ -7,7 +7,7 @@ const { errors } = require('celebrate');
 const routes = require('./routes');
 const errorHandler = require('./middlewares/error-handler');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-const { NotFoundError } = require('./utils/errors');
+const NotFoundError = require('./errors/NotFoundError'); 
 
 mongoose
   .connect('mongodb://127.0.0.1:27017/wtwr_db')
